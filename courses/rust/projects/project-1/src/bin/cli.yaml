@@ -1,0 +1,11 @@
+name: kvs
+version: "0.1.0"
+author: Yu Xie <lhxxxy43@gmail.com> 
+about: An simple in-memory key/value store
+args:
+    - get:
+        takes_value: true
+    - set:
+        takes_value: true
+    - rm:
+        takes_value: true
