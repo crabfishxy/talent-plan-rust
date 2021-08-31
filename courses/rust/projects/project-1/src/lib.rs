@@ -1,23 +1,30 @@
 use core::panic;
-use std::{collections::HashMap, fs::{self, File}, io::{self, BufReader, BufWriter, Read, Seek, SeekFrom, Write}, path::PathBuf};
+use std::{collections::{BTreeMap, HashMap}, fmt::Result, fs::{self, File}, io::{self, BufReader, BufWriter, Read, Seek, SeekFrom, Write}, path::PathBuf, string};
 use anyhow::Result;
+
+use serde::{Deserialize, Serialize};
+use serde_json::Deserializer;
 
 const log_path: PathBuf = PathBuf::from("kvs_file");
 
 pub struct Entry {
-    // log file filed_id
-    field_id: u64,
+    // log file file_id
+    file_id: u64,
     // value size
     value_size: u64,
     // value position
     value_pos: u64,
 }
 
+pub enum Command {
+    SET {key: String, value: String},
+    REMOVE {key: String},
+}
+
 pub struct KvStore {
-    index: HashMap<String, Entry>,
+    index: BTreeMap<String, Entry>,
     reader_map: HashMap<u64, BufReaderWithPos<File>>,
     writer: BufWriterWithPos<File>,
-
 }
 
 impl KvStore {
@@ -39,6 +46,24 @@ impl KvStore {
         
     }
 
+}
+
+
+fn load(file_id: u64, reader: &mut BufReaderWithPos<File>, index: &mut BTreeMap<String, Entry>) -> (Result<u64>) {
+    let mut pos = reader.seek(SeekFrom::Start(0))?;
+    let mut stream = Deserializer::from_reader(reader).into_iter::<Command>();
+    while let Some(cmd) = stream.next() {
+        let new_pos = stream.byte_offset() as u64;
+        match cmd? {
+            Command::SET {key, ..} => {
+
+            }
+            Command::REMOVE {key, ..} => {
+                
+            }
+        }    
+    }
+    Ok(())
 }
 
 struct BufReaderWithPos<R: Read+Seek> {
