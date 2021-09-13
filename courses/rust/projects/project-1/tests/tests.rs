@@ -1,5 +1,6 @@
 use assert_cmd::prelude::*;
-use kvs::{KvStore, Result};
+use kvs::{KvStore};
+use anyhow::{Result};
 use predicates::ord::eq;
 use predicates::str::{contains, is_empty, PredicateStrExt};
 use std::process::Command;
@@ -64,7 +65,6 @@ fn cli_set() {
 #[test]
 fn cli_get_stored() -> Result<()> {
     let temp_dir = TempDir::new().expect("unable to create temporary working directory");
-
     let mut store = KvStore::open(temp_dir.path())?;
     store.set("key1".to_owned(), "value1".to_owned())?;
     store.set("key2".to_owned(), "value2".to_owned())?;

@@ -2,10 +2,36 @@ name: kvs
 version: "0.1.0"
 author: Yu Xie <lhxxxy43@gmail.com> 
 about: An simple in-memory key/value store
-args:
+subcommands:
     - get:
-        takes_value: true
+        about: get value
+        args:
+            - key:
+                value_name: KEY
+                takes_value: true
+                required: true
     - set:
-        takes_value: true
+        about: set value
+        args:
+            - key:
+                value_name: KEY
+                takes_value: true
+                required: true
+            - val:
+                value_name: VALUE
+                takes_value: true
+                required: true
     - rm:
-        takes_value: true
+        about: rm value
+        args:
+            - key:
+                value_name: KEY
+                takes_value: true
+                required: true
+# args:
+#     - get:
+#         takes_value: true
+#     - set:
+#         takes_value: true
+#     - rm:
+#         takes_value: true
