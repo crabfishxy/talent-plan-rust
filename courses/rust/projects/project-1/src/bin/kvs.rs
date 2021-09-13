@@ -1,8 +1,8 @@
-use std::{process::exit};
+use anyhow::{Error, Result};
 use clap::load_yaml;
-use anyhow::{Result, Error};
-use kvs::{KvStore};
+use kvs::KvStore;
 use std::env::current_dir;
+use std::process::exit;
 
 #[macro_use]
 extern crate clap;

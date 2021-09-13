@@ -1,6 +1,15 @@
 use anyhow::{Error, Result};
 use core::panic;
-use std::{any, collections::{BTreeMap, HashMap}, ffi::OsStr, fs::{self, File, OpenOptions}, io::{self, BufReader, BufWriter, Read, Seek, SeekFrom, Write}, ops::Range, path::{Path, PathBuf}, string};
+use std::{
+    any,
+    collections::{BTreeMap, HashMap},
+    ffi::OsStr,
+    fs::{self, File, OpenOptions},
+    io::{self, BufReader, BufWriter, Read, Seek, SeekFrom, Write},
+    ops::Range,
+    path::{Path, PathBuf},
+    string,
+};
 
 use serde::{Deserialize, Serialize};
 use serde_json::Deserializer;
@@ -116,7 +125,7 @@ impl KvStore {
             reader_map.insert(log, reader);
         }
 
-        let current_gen =log_list.last().unwrap_or(&0) + 1;
+        let current_gen = log_list.last().unwrap_or(&0) + 1;
         let mut writer = BufWriterWithPos::new(
             OpenOptions::new()
                 .create(true)
@@ -125,7 +134,8 @@ impl KvStore {
                 .open(path.join(format!("{}.log", current_gen)))?,
         )?;
 
-        let mut reader = BufReaderWithPos::new(File::open(path.join(format!("{}.log",current_gen)))?)?;
+        let mut reader =
+            BufReaderWithPos::new(File::open(path.join(format!("{}.log", current_gen)))?)?;
         uncompacted += load(0, &mut reader, &mut index)?;
         reader_map.insert(current_gen, reader);
         Ok(KvStore {
@@ -156,7 +166,8 @@ impl KvStore {
                 .create(true)
                 .write(true)
                 .append(true)
-                .open(self.path.join(format!("{}.log", compaction_gen)))?,)?;
+                .open(self.path.join(format!("{}.log", compaction_gen)))?,
+        )?;
 
         let mut new_pos = 0; // pos in the new log file.
         for cmd_pos in &mut self.index.values_mut() {
@@ -184,7 +195,7 @@ impl KvStore {
             .collect();
         for stale_gen in stale_gens {
             self.reader_map.remove(&stale_gen);
-            fs::remove_file(&self.path.join(format!("{}.log",stale_gen)))?;
+            fs::remove_file(&self.path.join(format!("{}.log", stale_gen)))?;
         }
         self.uncompacted = 0;
 
